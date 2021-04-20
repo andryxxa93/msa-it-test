@@ -12,20 +12,24 @@ export default (state = initialState, action) => {
             const filtrdedOrders = state.orders.filter(order => order.id !== action.orderId)
             return {...state, orders: [...filtrdedOrders]}
         case DOUBLE_ORDER:
-            const doubleOrder = (obj) => {
-                const newObj = {};
-                for (const key in obj) {
-                    if (Array.isArray(obj[key])) {
-                        newObj[key] = [...obj[key]]
-                        continue
-                    }
-                    newObj[key] = obj[key]
-                }
-                return newObj
-            }
+            const deepClone = obj => {
+                if (obj === null) return null;
+                let clone = Object.assign({}, obj);
+                Object.keys(clone).forEach(
+                  key =>
+                    (clone[key] =
+                      typeof obj[key] === "object" ? deepClone(obj[key]) : obj[key])
+                );
+                return Array.isArray(obj) && obj.length
+                  ? (clone.length = obj.length) && Array.from(clone)
+                  : Array.isArray(obj)
+                  ? Array.from(obj)
+                  : clone;
+              };
+              
             const selectedOrder = state.orders.find(order => order.id === action.orderId)
             
-            const newOrder = doubleOrder(selectedOrder);
+            const newOrder = deepClone(selectedOrder);
             newOrder.id = Date.now() / Math.random();
 
             const updatedOrders = [...state.orders];
