@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     },
     list: {
         marginTop: 40,
-        maxHeight: '50%'
+        maxHeight: '35%'
     },
     buttonContainer: {
         marginTop: 60,
