@@ -124,7 +124,7 @@ const Card = (props) => {
 
         const getWeekDay = () => {
             const weekday = formatDate(new Date(nearestDelivery.date), {skeleton: 'EEEE'})
-            let inWord = weekday[0] === 'в' ? 'во' : 'в';
+            let inWord = weekday === 'вторник' ? 'во' : 'в';
             if (weekday[weekday.length - 1] === 'а') {
                 const correctWeekday = weekday.slice(0, -1) + 'у';
                 return dispatch({type: 'WEEKDAY', payload:`${inWord} ${correctWeekday}`});
