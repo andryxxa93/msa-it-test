@@ -10,7 +10,6 @@ import * as authActions from '../store/actions/auth';
 import AuthScreen from '../screens/AuthScreen';
 import OrdersScreen from '../screens/OrdersScreen';
 import SelectedOrderScreen from '../screens/SelectedOrderScreen';
-import CustomSafeAreaView from '../Components/CustomSafeAreaView';
 
 const AuthNavigator = createStackNavigator({
     Auth: AuthScreen

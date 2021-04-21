@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Text, TextInput, View, StyleSheet, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import * as authActions from '../store/actions/auth';
 
@@ -7,30 +7,52 @@ const AuthScreen = (props) => {
 
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('')
+    const [showErrorMsg, setShowErrorMsg] = useState(false)
+
+    const loginInput = useRef();
+    const passwordInput = useRef();
+    
     const dispatch = useDispatch();
 
     const authHandler = () => {
-        try {
-            dispatch(authActions.login(login, password))
-            props.navigation.navigate('Orders')
-        } catch (error) {
-            Alert.alert('Ошибка входа', error.message, 'Окей')
+        if (!login.trim() || !password.trim()) {
+            setShowErrorMsg(true)
+        }
+        if (login && password) {
+            setShowErrorMsg(false)
+            try {
+                dispatch(authActions.login(login, password))
+                props.navigation.navigate('Orders')
+            } catch (error) {
+                Alert.alert('Ошибка входа', error.message, [{text:'Окей'}])
+            }
         }
     }
 
+    useEffect(() => {
+        loginInput.current.focus();
+    }, [])
+
     return (
-       <SafeAreaView style={styles.authContainer}>
+       <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : null}
+            keyboardVerticalOffset={20}
+            style={styles.authContainer}
+       >
             <Text style={styles.greetingText}>Добро пожаловать!</Text>
             <View style={styles.inputContainer}>
-                <TextInput 
+                <TextInput
+                    ref={loginInput}
                     style={styles.input} 
                     autoCapitalize='none' 
                     placeholderTextColor='black' 
                     onChangeText={setLogin} 
                     value={login} 
                     placeholder='Логин'
+                    onSubmitEditing={() => passwordInput.current.focus()}
                 />
-                <TextInput 
+                <TextInput
+                    ref={passwordInput}
                     autoCapitalize='none' 
                     style={styles.input} 
                     placeholderTextColor='black'
@@ -38,6 +60,7 @@ const AuthScreen = (props) => {
                     onChangeText={setPassword} 
                     value={password} 
                     placeholder='Пароль'/>
+                {showErrorMsg && <Text style={{color: 'red', fontSize: 14}}>Заполните все поля</Text>}
             </View>
             <TouchableOpacity
                 style={styles.authButton}
@@ -47,7 +70,7 @@ const AuthScreen = (props) => {
                     ВОЙТИ
                 </Text>
             </TouchableOpacity>
-       </SafeAreaView>
+       </KeyboardAvoidingView>
     )
 }
 
@@ -67,7 +90,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center'        
+        alignItems: 'center',
+        paddingTop: Platform.OS === 'android' ? '40%' : 0       
     },
     greetingText: {
         fontSize: 25,

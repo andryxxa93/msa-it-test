@@ -40,7 +40,7 @@ const SelectedOrderScreen = (props) => {
        <SafeAreaView style={styles.container}>
             <View style={{paddingHorizontal: 18}}>
                 <ProgressBar
-                    id={orderId}
+                    orderId={orderId}
                     state={state}       
                 />
                 <Text style={styles.headerText}>
@@ -86,6 +86,7 @@ SelectedOrderScreen.navigationOptions = navData => {
         headerTintColor: 'white',
         headerStyle: {
             shadowColor: 'transparent',
+            elevation: 0
         },
         headerLeft: () => <Pressable style={{marginLeft: 20}} onPress={() => navData.navigation.navigate('Orders')}>
             <Text style={{fontSize: 17, color: '#1E6FB9'}}>Назад</Text>

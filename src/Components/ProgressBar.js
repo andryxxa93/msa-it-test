@@ -3,42 +3,42 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 
-const ProgressBar = (props) => {
+const ProgressBar = ({state, orderId}) => {
 
-    const order = useSelector(state => state.orders.orders.find(order => order.id === props.id))
+    const {packageName, packageCalories} = useSelector(state => state.orders.orders.find(order => order.id === orderId))
 
     return (
         <View>
             <View style={styles.header}>
                 <Text style={styles.daysleft}>
-                    {props.state.daysPast}
+                    {state.daysPast}
                 </Text>
                 <View>
                     <Text style={styles.type}>
-                        {order.packageName}
+                        {packageName}
                     </Text>
                     <Text style={styles.calories}>
-                        {order.packageCalories}
+                        {packageCalories}
                     </Text>
                 </View>
             </View>
         <View style={styles.progressBar}>
             <View>
                 <View style={styles.progress}>
-                    <View style={{...styles.line, width: `${props.state.deliveredPercent}%`}}>
+                    <View style={{...styles.line, width: `${state.deliveredPercent}%`}}>
                         <View style={styles.dot}></View>
                     </View>
                 </View>
             </View>
             <View style={styles.progressInfo}>
                 <Text style={styles.progressDay}>
-                    {props.state.firstDelivery}
+                    {state.firstDelivery}
                 </Text>
                 <Text style={{...styles.progressDay,...styles.progressDayesLeft}}>
-                    Осталось {props.state.daysLeft}
+                    Осталось {state.daysLeft}
                 </Text>
                 <Text style={styles.progressDay}>
-                    {props.state.lastDelivery} 
+                    {state.lastDelivery} 
                 </Text>
             </View>
         </View>

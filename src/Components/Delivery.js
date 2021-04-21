@@ -1,14 +1,15 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'; 
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useGlobalize } from 'react-native-globalize';
 
 import imageUri from '../../assets/bag.png';
 
 const Delivery = (props) => {
+    const { formatDate } = useGlobalize();
 
-    const date = new Date(props.date).toLocaleString('ru', {day: 'numeric', month: 'long'});
-    const weekday = new Date(props.date).toLocaleString('ru', {weekday: 'long'});
+    const date = formatDate(new Date(props.date), { skeleton: "MMMMd" });
+    const weekday = formatDate(new Date(props.date), { skeleton: "EEEE" });
 
     return (
        <TouchableOpacity style={styles.container}>

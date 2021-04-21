@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
+import { GlobalizeProvider, loadCldr } from 'react-native-globalize';
 
 
 import AppNavigator from './src/navigation/AppNavigator';
@@ -15,10 +16,16 @@ const rootReducer = combineReducers({
 
 const store = createStore(rootReducer);
 
+loadCldr(
+    require('react-native-globalize/locale-data/ru'),
+);
+
 export default function App() {
     return (
         <Provider store={store}>
-            <AppNavigator/>
+            <GlobalizeProvider locale="ru">
+                <AppNavigator/>
+            </GlobalizeProvider>
         </Provider>
     );
 }

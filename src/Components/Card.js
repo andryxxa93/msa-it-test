@@ -1,5 +1,6 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useGlobalize } from 'react-native-globalize';
 import { useSelector } from 'react-redux';
 import ProgressBar from './ProgressBar';
 
@@ -30,6 +31,9 @@ const reducer = (state, action) => {
 }
 
 const Card = (props) => {
+
+    const { formatDate } = useGlobalize();
+
     const orders = useSelector(state => state.orders.orders);
     const deliveries = orders.find(order => order.id === props.id).deliveries;
 
@@ -55,14 +59,14 @@ const Card = (props) => {
         
         let nearestDelivery = sortedDeliveries.find(delivery => Date.parse(delivery.date) > now) || sortedDeliveries[deliveries.length -1];
         dispatch({type: 'NEARESTDELIVERY', payload: nearestDelivery});
-
-        const firstDelivery = (new Date(sortedDeliveries[0].date).toLocaleString('ru', {month: 'short', day: 'numeric'}).replace('.', ''));
+        
+        const firstDelivery = formatDate(new Date(sortedDeliveries[0].date), { skeleton: "MMMd" }).replace('.', '');
         dispatch({type: 'FIRSTDATE', payload: firstDelivery});
 
-        const lastDelivery = (new Date(sortedDeliveries[deliveries.length - 1].date).toLocaleString('ru', {month: 'short', day: 'numeric'}).replace('.', ''));
+        const lastDelivery = formatDate(new Date(sortedDeliveries[deliveries.length - 1].date), {skeleton: 'MMMd'}).replace('.', '');
         dispatch({type: 'LASTDATE', payload: lastDelivery});
 
-        const nearestDate = new Date(nearestDelivery.date).toLocaleString('ru', {month: 'short', day: 'numeric'});
+        const nearestDate = formatDate(new Date(nearestDelivery.date), {skeleton: 'MMMd'});
         dispatch({type: 'NEARESTDATE', payload: nearestDate});
 
         const address = nearestDelivery.address;
@@ -119,7 +123,7 @@ const Card = (props) => {
         getDeliveredPercent()
 
         const getWeekDay = () => {
-            const weekday = new Date(nearestDelivery.date).toLocaleString('ru', {weekday: 'long'})
+            const weekday = formatDate(new Date(nearestDelivery.date), {skeleton: 'EEEE'})
             let inWord = weekday[0] === 'в' ? 'во' : 'в';
             if (weekday[weekday.length - 1] === 'а') {
                 const correctWeekday = weekday.slice(0, -1) + 'у';
@@ -140,7 +144,7 @@ const Card = (props) => {
             onPress={() => props.onPressHandler(state, props.id)} 
             style={styles.container}>
            <ProgressBar
-                id={props.id}
+                orderId={props.id}
                 state={state}
             />
            <View style={styles.delivery}>
